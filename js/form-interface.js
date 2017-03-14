@@ -5,9 +5,17 @@ $(function(){
     event.preventDefault();
 
     var alarmTime = $('#alarm-time').val();
-    var newAlarm = new Alarm.Alarm(alarmTime);
-    console.log(alarmTime);
-    newAlarm.goOff(moment().format('LT'));
+
+    alarmTime = alarmTime.split(":");
+
+    var newMoment = moment().hour(alarmTime[0]).minute(alarmTime[1]).second(0);
+
+    var newAlarm = new Alarm.Alarm(newMoment);
+    console.log(newMoment);
+
+    setInterval(function(){
+      newAlarm.goOff();
+    }, 1);
 
   });
 })

@@ -6,3 +6,7 @@ body {
 .alarm {
   background-color: orange;
 }
+
+.container {
+  border: 1px solid red;
+}
