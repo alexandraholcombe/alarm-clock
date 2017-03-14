@@ -1,3 +1,3 @@
 $(function(){
-  alert("You made it!");
+  $('#current-time').text(moment().format('LTS'));
 });
