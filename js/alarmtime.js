@@ -6,11 +6,13 @@ var conversion = function(time) {
 
   var time = time.split(":");
 
-  if(parseInt(time[0]) > 12){
-    parseInt(time[0])  = parseInt(time[0])  - 12;
-    return time[0] + ":" + time[1] + " PM";
+  var hours = parseInt(time[0]);
+
+  if(hours > 12){
+    hours  = hours  - 12;
+    return hours + ":" + time[1] + " PM";
   } else {
-    return time[0] + ":" + time[1] + " AM";
+    return hours + ":" + time[1] + " AM";
   }
 }
 
