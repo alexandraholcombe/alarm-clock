@@ -28,7 +28,7 @@ gulp.task('jsBrowserify', ['concatInterface'], function() {
     .pipe(gulp.dest('./build/js'));
 });
 
-gulp.task('concatInterface', ['clean'], function() {
+gulp.task('concatInterface', function() {
   return gulp.src(['./js/*-interface.js'])
     .pipe(concat('allConcat.js'))
     .pipe(gulp.dest('./tmp'));
@@ -40,18 +40,25 @@ gulp.task('minifyScripts', ['jsBrowserify'], function(){
     .pipe(gulp.dest('./build/js'));
 });
 
-gulp.task('build', ['clean'], function(){
-  if (buildProduction) {
-    gulp.start('minifyScripts');
-  } else {
-    gulp.start('jsBrowserify');
-  }
-  gulp.start('bower');
-});
 
 gulp.task('jsBuild', ['jsBrowserify', 'jshint'], function(){
   browserSync.reload();
 });
+
+gulp.task('bowerJS', function() {
+  return gulp.src(lib.ext('js').files)
+  .pipe(concat('vendor.min.js'))
+  .pipe(uglify())
+  .pipe(gulp.dest('./build/js'));
+});
+
+gulp.task('bowerCSS', function () {
+  return gulp.src(lib.ext('css').files)
+  .pipe(concat('vendor.css'))
+  .pipe(gulp.dest('./build/css'));
+});
+
+gulp.task('bower', ['bowerJS', 'bowerCSS']);
 
 gulp.task('bowerBuild', ['bower'], function(){
   browserSync.reload();
@@ -60,6 +67,7 @@ gulp.task('bowerBuild', ['bower'], function(){
 gulp.task('htmlBuild', function() {
   browserSync.reload();
 });
+
 
 gulp.task('serve', function() {
   browserSync.init({
@@ -85,24 +93,19 @@ gulp.task('jshint', function(){
     .pipe(jshint.reporter('default'));
 });
 
-gulp.task('bowerJS', function() {
-  return gulp.src(lib.ext('js').files)
-    .pipe(concat('vendor.min.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('./build/js'));
-});
-
-gulp.task('bowerCSS', function () {
-  return gulp.src(lib.ext('css').files)
-    .pipe(concat('vendor.css'))
-    .pipe(gulp.dest('./build/css'));
-});
-
-gulp.task('bower', ['bowerJS', 'bowerCSS']);
 
 gulp.task('buildProd', ['minifyScripts'], function(){
   gulp.start('bower');
 });
 gulp.task('buildDev', ['jsBrowserify'], function(){
+  gulp.start('bower');
+});
+
+gulp.task('build', ['clean'], function(){
+  if (buildProduction) {
+    gulp.start('minifyScripts');
+  } else {
+    gulp.start('jsBrowserify');
+  }
   gulp.start('bower');
 });
